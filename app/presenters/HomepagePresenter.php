@@ -2,14 +2,14 @@
 
 namespace App\Presenters;
 
+use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
-use Nette\Application\UI\Presenter;
 use SingleActionPresenter\Template\TemplateRenderer;
 
 
-final class HomepagePresenter extends Presenter
+final class HomepagePresenter implements IPresenter
 {
 
 	/**
