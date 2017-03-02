@@ -26,10 +26,11 @@ final class HomepagePresenter extends Presenter
 	public function run(Request $request): IResponse
 	{
 		$template = $this->templateFactory->createTemplate();
-		$template->setFile(__DIR__ . '/templates/Homepage.latte');
 		$latte = $template->getLatte();
 		$latte->addProvider('uiControl', new UiPresenter());
 
-		return new TextResponse($template);
+		return new TextResponse(
+			$template->render(__DIR__ . '/templates/Homepage.latte')
+		);
 	}
 }
