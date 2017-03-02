@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
@@ -10,7 +11,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
 
 
-final class HomepagePresenter extends Presenter
+final class HomepagePresenter extends Presenter implements IPresenter
 {
 
 	/**
@@ -27,7 +28,7 @@ final class HomepagePresenter extends Presenter
 	public function run(Request $request): IResponse
 	{
 		$template = $this->templateFactory->createTemplate($this);
-		$template->setFile(__DIR__ . '/templates/Homepage/default.latte');
+		$template->setFile(__DIR__ . '/templates/Homepage.latte');
 
 		return new TextResponse($template);
 	}
