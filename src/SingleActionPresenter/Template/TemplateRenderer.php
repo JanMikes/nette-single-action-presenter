@@ -7,7 +7,7 @@ use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use SingleActionPresenter\Application\PresenterHelper;
 
 
-final class TemplateRenderer
+final class TemplateRenderer // @todo: add interface
 {
 
 	/**
