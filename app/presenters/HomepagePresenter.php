@@ -9,7 +9,7 @@ use Nette\Application\Responses\TextResponse;
 use SingleActionPresenter\Template\TemplateRenderer;
 
 
-final class HomepagePresenter implements IPresenter
+final class HomepagePresenter implements IPresenter // @todo: drop this
 {
 
 	/**
@@ -24,6 +24,7 @@ final class HomepagePresenter implements IPresenter
 	}
 
 
+	// @todo: __invoke here
 	public function run(Request $request): IResponse
 	{
 		return new TextResponse(
