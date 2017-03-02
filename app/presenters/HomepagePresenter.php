@@ -5,32 +5,32 @@ namespace App\Presenters;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
-use Nette\Application\UI\ITemplateFactory;
 use Nette\Application\UI\Presenter;
-use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use SingleActionPresenter\Template\TemplateRenderer;
 
 
 final class HomepagePresenter extends Presenter
 {
 
 	/**
-	 * @var TemplateFactory
+	 * @var TemplateRenderer
 	 */
-	private $templateFactory;
+	private $templateRenderer;
 
-	public function __construct(ITemplateFactory $templateFactory)
+
+	public function __construct(TemplateRenderer $templateRenderer)
 	{
-		$this->templateFactory = $templateFactory;
+		$this->templateRenderer = $templateRenderer;
 	}
+
 
 	public function run(Request $request): IResponse
 	{
-		$template = $this->templateFactory->createTemplate();
-		$latte = $template->getLatte();
-		$latte->addProvider('uiControl', new UiPresenter());
-
 		return new TextResponse(
-			$template->render(__DIR__ . '/templates/Homepage.latte')
+			$this->templateRenderer->renderFileWithParameters(
+				__DIR__ . '/templates/Homepage.latte'
+			)
 		);
 	}
+
 }
