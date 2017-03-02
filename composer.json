@@ -36,5 +36,10 @@
 	"require-dev": {
 		"nette/tester": "^1.6"
 	},
+	"autoload": {
+		"psr-4": {
+			"SingleActionPresenter\\": "src/SingleActionPresenter"
+		}
+	},
 	"minimum-stability": "stable"
 }

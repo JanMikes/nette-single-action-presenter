@@ -21,3 +21,7 @@ services:
 	- App\Forms\SignInFormFactory
 	- App\Forms\SignUpFormFactory
 	router: App\RouterFactory::createRouter
+
+	# SingleActionPresenter package
+	- SingleActionPresenter\Application\PresenterHelper
+	- SingleActionPresenter\Template\TemplateRenderer
