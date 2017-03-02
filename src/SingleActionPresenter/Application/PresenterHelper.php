@@ -4,7 +4,7 @@ namespace SingleActionPresenter\Application;
 
 use Nette\Application\UI\Presenter;
 
-final class UIPresenterHelper extends Presenter
+final class PresenterHelper extends Presenter
 {
 
 }
