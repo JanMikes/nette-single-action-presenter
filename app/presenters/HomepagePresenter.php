@@ -9,7 +9,7 @@ use Nette\Application\Responses\TextResponse;
 use SingleActionPresenter\Template\TemplateRenderer;
 
 
-final class HomepagePresenter implements IPresenter // @todo: drop this
+final class HomepagePresenter
 {
 
 	/**
@@ -31,16 +31,6 @@ final class HomepagePresenter implements IPresenter // @todo: drop this
 				__DIR__ . '/templates/Homepage.latte'
 			)
 		);
-	}
-
-
-	/**
-	 * For interface BC. To be removed.
-	 *
-	 * @return IResponse
-	 */
-	public function run(Request $request)
-	{
 	}
 
 }

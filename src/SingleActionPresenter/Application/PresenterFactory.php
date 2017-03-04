@@ -39,7 +39,7 @@ final class PresenterFactory implements IPresenterFactory
 
 	/**
 	 * @param string $name
-	 * @return IPresenter|callable
+	 * @return IPresenter|callable|object
 	 */
 	public function createPresenter($name)
 	{
@@ -51,11 +51,9 @@ final class PresenterFactory implements IPresenterFactory
 
 	/**
 	 * Generates and checks presenter class name.
-	 * @param  string  presenter name
-	 * @return string  class name
-	 * @throws InvalidPresenterException
+	 * @param string $name presenter name
 	 */
-	public function getPresenterClass(&$name)
+	public function getPresenterClass(&$name): string
 	{
 		if (isset($this->cache[$name])) {
 			return $this->cache[$name];
@@ -73,18 +71,11 @@ final class PresenterFactory implements IPresenterFactory
 		$reflection = new \ReflectionClass($class);
 		$class = $reflection->getName();
 
-		if (!$reflection->implementsInterface(IPresenter::class)) {
-			throw new InvalidPresenterException("Cannot load presenter '$name', class '$class' is not Nette\\Application\\IPresenter implementor.");
-		} elseif ($reflection->isAbstract()) {
+		if ($reflection->isAbstract()) {
 			throw new InvalidPresenterException("Cannot load presenter '$name', class '$class' is abstract.");
 		}
 
 		$this->cache[$name] = $class;
-
-		if ($name !== ($realName = $this->unformatPresenterClass($class))) {
-			trigger_error("Case mismatch on presenter name '$name', correct name is '$realName'.", E_USER_WARNING);
-			$name = $realName;
-		}
 
 		return $class;
 	}
