@@ -6,7 +6,7 @@ use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
-use SingleActionPresenter\Template\TemplateRenderer;
+use IndependentSingleActionPresenter\Template\TemplateRenderer;
 
 
 final class HomepagePresenter
