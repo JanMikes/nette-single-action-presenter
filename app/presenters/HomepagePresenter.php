@@ -24,8 +24,7 @@ final class HomepagePresenter implements IPresenter // @todo: drop this
 	}
 
 
-	// @todo: __invoke here
-	public function run(Request $request): IResponse
+	public function __invoke(Request $request): IResponse
 	{
 		return new TextResponse(
 			$this->templateRenderer->renderFileWithParameters(
@@ -34,4 +33,12 @@ final class HomepagePresenter implements IPresenter // @todo: drop this
 		);
 	}
 
+
+	/**
+	 * Temp for BC.
+	 * @return IResponse
+	 */
+	public function run(Request $request)
+	{
+	}
 }

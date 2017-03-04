@@ -76,7 +76,7 @@ final class CallablePresenterAwareApplication extends Application
 	private $requests = [];
 
 	/**
-	 * @var IPresenter|NULL
+	 * @var IPresenter|callable|NULL
 	 */
 	private $presenter;
 
@@ -171,7 +171,13 @@ final class CallablePresenterAwareApplication extends Application
 			throw count($this->requests) > 1 ? $e : new BadRequestException($e->getMessage(), 0, $e);
 		}
 		$this->onPresenter($this, $this->presenter); // use event-dispatcher instead
-		$response = $this->presenter->run(clone $request);
+
+		if (is_callable($this->presenter)) {
+			$presenter = $this->presenter;
+			$response = $presenter(clone $request);
+		} else {
+			$response = $this->presenter->run(clone $request);
+		}
 
 		if ($response instanceof Responses\ForwardResponse) {
 			$request = $response->getRequest();
