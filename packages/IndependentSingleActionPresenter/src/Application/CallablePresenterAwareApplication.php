@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SingleActionPresenter\Application;
+namespace IndependentSingleActionPresenter\Application;
 
 use Nette;
 use Nette\Application\Application;
