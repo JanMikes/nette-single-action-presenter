@@ -14,6 +14,8 @@ use Nette\Application\BadRequestException;
 use Nette\Application\InvalidPresenterException;
 use Nette\Application\Responses;
 use Nette\Application\UI;
+use Nette\Http\IRequest;
+use Nette\Http\IResponse;
 
 
 /**
@@ -23,54 +25,88 @@ final class CallablePresenterAwareApplication extends Application
 {
 	use Nette\SmartObject;
 
-	/** @var int */
+	/**
+	 * @var int
+	 */
 	public static $maxLoop = 20;
 
-	/** @var bool enable fault barrier? */
+	/**
+	 * @var bool enable fault barrier?
+	 */
 	public $catchExceptions;
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	public $errorPresenter;
 
-	/** @var callable[]  function (Application $sender); Occurs before the application loads presenter */
+	/**
+	 * @var callable[]  function (Application $sender); Occurs before the application loa
+	 * ds presenter */
 	public $onStartup;
 
-	/** @var callable[]  function (Application $sender, \Exception|\Throwable $e = NULL); Occurs before the application shuts down */
+	/**
+	 * @var callable[]  function (Application $sender, \Exception|\Throwable $e = NULL); Occu
+	 * rs before the application shuts down */
 	public $onShutdown;
 
-	/** @var callable[]  function (Application $sender, Request $request); Occurs when a new request is received */
+	/**
+	 * @var callable[]  function (Application $sender, Request $request);
+	 * Occurs when a new request is received */
 	public $onRequest;
 
-	/** @var callable[]  function (Application $sender, Presenter $presenter); Occurs when a presenter is created */
+	/**
+	 * @var callable[]  function (Application $sender, Presenter $presenter);
+	 * Occurs when a presenter is created */
 	public $onPresenter;
 
-	/** @var callable[]  function (Application $sender, IResponse $response); Occurs when a new response is ready for dispatch */
+	/**
+	 * @var callable[]  function (Application $sender, IResponse $response);
+	 * Occurs when a new response is ready for dispatch */
 	public $onResponse;
 
-	/** @var callable[]  function (Application $sender, \Exception|\Throwable $e); Occurs when an unhandled exception occurs in the application */
+	/**
+	 * @var callable[]  function (Application $sender, \Exception|\Throwable $e);
+	 * Occurs when an unhandled exception occurs in the application */
 	public $onError;
 
-	/** @var Request[] */
+	/**
+	 * @var Request[]
+	 */
 	private $requests = [];
 
-	/** @var IPresenter|NULL */
+	/**
+	 * @var IPresenter|NULL
+	 */
 	private $presenter;
 
-	/** @var Nette\Http\IRequest */
+	/**
+	 * @var IRequest
+	 */
 	private $httpRequest;
 
-	/** @var Nette\Http\IResponse */
+	/**
+	 * @var IResponse
+	 */
 	private $httpResponse;
 
-	/** @var IPresenterFactory */
+	/**
+	 * @var IPresenterFactory
+	 */
 	private $presenterFactory;
 
-	/** @var IRouter */
+	/**
+	 * @var IRouter
+	 */
 	private $router;
 
 
-	public function __construct(IPresenterFactory $presenterFactory, IRouter $router, Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
-	{
+	public function __construct(
+		IPresenterFactory $presenterFactory,
+		IRouter $router,
+		IRequest $httpRequest,
+		IResponse $httpResponse
+	) {
 		$this->httpRequest = $httpRequest;
 		$this->httpResponse = $httpResponse;
 		$this->presenterFactory = $presenterFactory;
@@ -78,9 +114,6 @@ final class CallablePresenterAwareApplication extends Application
 	}
 
 
-	/**
-	 * Dispatch a HTTP request to a front controller.
-	 */
 	public function run(): void
 	{
 		try {
