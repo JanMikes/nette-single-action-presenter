@@ -83,9 +83,8 @@ final class PresenterFactory implements IPresenterFactory
 
 	/**
 	 * Sets mapping as pairs [module => mask]
-	 * @return static
 	 */
-	public function setMapping(array $mapping)
+	public function setMapping(array $mapping): self
 	{
 		foreach ($mapping as $module => $mask) {
 			if (is_string($mask)) {
@@ -105,11 +104,8 @@ final class PresenterFactory implements IPresenterFactory
 
 	/**
 	 * Formats presenter class name from its name.
-	 * @param  string
-	 * @return string
-	 * @internal
 	 */
-	public function formatPresenterClass($presenter)
+	public function formatPresenterClass(string $presenter): string
 	{
 		$parts = explode(':', $presenter);
 		$mapping = isset($parts[1], $this->mapping[$parts[0]])
@@ -120,25 +116,6 @@ final class PresenterFactory implements IPresenterFactory
 			$mapping[0] .= str_replace('*', $part, $mapping[$parts ? 1 : 2]);
 		}
 		return $mapping[0];
-	}
-
-
-	/**
-	 * Formats presenter name from class name.
-	 * @param  string
-	 * @return string|NULL
-	 * @internal
-	 */
-	public function unformatPresenterClass($class)
-	{
-		foreach ($this->mapping as $module => $mapping) {
-			$mapping = str_replace(['\\', '*'], ['\\\\', '(\w+)'], $mapping);
-			if (preg_match("#^\\\\?$mapping[0]((?:$mapping[1])*)$mapping[2]\\z#i", $class, $matches)) {
-				return ($module === '*' ? '' : $module . ':')
-					. preg_replace("#$mapping[1]#iA", '$1:', $matches[1]) . $matches[3];
-			}
-		}
-		return NULL;
 	}
 
 }
