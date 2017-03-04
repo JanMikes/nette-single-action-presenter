@@ -16,6 +16,13 @@ use Nette\Application\Responses;
 use Nette\Application\UI;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\ApplicationErrorEvent;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\ApplicationResponseEvent;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\ApplicationShutdownEvent;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\ApplicationStartupEvent;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\PresenterCreatedEvent;
+use Symplify\SymfonyEventDispatcher\Adapter\Nette\Event\RequestRecievedEvent;
 
 
 /**
@@ -23,8 +30,6 @@ use Nette\Http\IResponse;
  */
 final class CallablePresenterAwareApplication extends Application
 {
-	use Nette\SmartObject;
-
 	/**
 	 * @var int
 	 */
@@ -39,36 +44,6 @@ final class CallablePresenterAwareApplication extends Application
 	 * @var string
 	 */
 	public $errorPresenter;
-
-	/**
-	 * @var callable[]  function (Application $sender); Occurs before the application loa
-	 * ds presenter */
-	public $onStartup;
-
-	/**
-	 * @var callable[]  function (Application $sender, \Exception|\Throwable $e = NULL); Occu
-	 * rs before the application shuts down */
-	public $onShutdown;
-
-	/**
-	 * @var callable[]  function (Application $sender, Request $request);
-	 * Occurs when a new request is received */
-	public $onRequest;
-
-	/**
-	 * @var callable[]  function (Application $sender, Presenter $presenter);
-	 * Occurs when a presenter is created */
-	public $onPresenter;
-
-	/**
-	 * @var callable[]  function (Application $sender, IResponse $response);
-	 * Occurs when a new response is ready for dispatch */
-	public $onResponse;
-
-	/**
-	 * @var callable[]  function (Application $sender, \Exception|\Throwable $e);
-	 * Occurs when an unhandled exception occurs in the application */
-	public $onError;
 
 	/**
 	 * @var Request[]
@@ -100,42 +75,62 @@ final class CallablePresenterAwareApplication extends Application
 	 */
 	private $router;
 
+	/**
+	 * @var EventDispatcherInterface
+	 */
+	private $eventDispatcher;
+
 
 	public function __construct(
 		IPresenterFactory $presenterFactory,
 		IRouter $router,
 		IRequest $httpRequest,
-		IResponse $httpResponse
+		IResponse $httpResponse,
+		EventDispatcherInterface $eventDispatcher
 	) {
 		$this->httpRequest = $httpRequest;
 		$this->httpResponse = $httpResponse;
 		$this->presenterFactory = $presenterFactory;
 		$this->router = $router;
+		$this->eventDispatcher = $eventDispatcher;
 	}
 
 
 	public function run(): void
 	{
 		try {
-			$this->onStartup($this); // use event-dispatcher instead
+			$this->eventDispatcher->dispatch(
+				ApplicationStartupEvent::NAME, new ApplicationStartupEvent($this)
+			);
 			$this->processRequest($this->createInitialRequest());
-			$this->onShutdown($this); // use event-dispatcher instead
+			$this->eventDispatcher->dispatch(
+				ApplicationShutdownEvent::NAME, new ApplicationShutdownEvent($this)
+			);
 
 		} catch (\Throwable|\Exception $e) {
 		}
 		if (isset($e)) {
-			$this->onError($this, $e); // use event-dispatcher instead
+			$this->eventDispatcher->dispatch(
+				ApplicationErrorEvent::NAME, new ApplicationErrorEvent($this, $e)
+			);
 			if ($this->catchExceptions && $this->errorPresenter) {
 				try {
 					$this->processException($e);
-					$this->onShutdown($this, $e); // use event-dispatcher instead
+					$this->eventDispatcher->dispatch(
+						ApplicationShutdownEvent::NAME, new ApplicationShutdownEvent($this)
+					);
 					return;
 
 				} catch (\Throwable|\Exception $e) {
-					$this->onError($this, $e); // use event-dispatcher instead
+					$this->eventDispatcher->dispatch(
+						ApplicationErrorEvent::NAME, new ApplicationErrorEvent($this, $e)
+					);
 				}
 			}
-			$this->onShutdown($this, $e); // use event-dispatcher instead
+			$this->eventDispatcher->dispatch(
+				ApplicationShutdownEvent::NAME,
+				new ApplicationShutdownEvent($this, $e)
+			);
 			throw $e;
 		}
 	}
@@ -159,7 +154,9 @@ final class CallablePresenterAwareApplication extends Application
 		}
 
 		$this->requests[] = $request;
-		$this->onRequest($this, $request); // use event-dispatcher instead
+		$this->eventDispatcher->dispatch(
+			RequestRecievedEvent::NAME, new RequestRecievedEvent($this, $request)
+		);
 
 		if (!$request->isMethod($request::FORWARD) && !strcasecmp($request->getPresenterName(), $this->errorPresenter)) {
 			throw new BadRequestException('Invalid request. Presenter is not achievable.');
@@ -170,7 +167,9 @@ final class CallablePresenterAwareApplication extends Application
 		} catch (InvalidPresenterException $e) {
 			throw count($this->requests) > 1 ? $e : new BadRequestException($e->getMessage(), 0, $e);
 		}
-		$this->onPresenter($this, $this->presenter); // use event-dispatcher instead
+		$this->eventDispatcher->dispatch(
+			ApplicationResponseEvent::NAME, new PresenterCreatedEvent($this, $this->presenter)
+		);
 
 		if (is_callable($this->presenter)) {
 			$presenter = $this->presenter;
@@ -184,7 +183,9 @@ final class CallablePresenterAwareApplication extends Application
 			goto process;
 
 		} elseif ($response) {
-			$this->onResponse($this, $response); // use event-dispatcher instead
+			$this->eventDispatcher->dispatch(
+				ApplicationResponseEvent::NAME, new ApplicationResponseEvent($this, $response)
+			);
 			$response->send($this->httpRequest, $this->httpResponse);
 		}
 	}
