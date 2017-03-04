@@ -84,25 +84,25 @@ final class CallablePresenterAwareApplication extends Application
 	public function run(): void
 	{
 		try {
-			$this->onStartup($this);
+			$this->onStartup($this); // use event-dispatcher instead
 			$this->processRequest($this->createInitialRequest());
-			$this->onShutdown($this);
+			$this->onShutdown($this); // use event-dispatcher instead
 
 		} catch (\Throwable|\Exception $e) {
 		}
 		if (isset($e)) {
-			$this->onError($this, $e);
+			$this->onError($this, $e); // use event-dispatcher instead
 			if ($this->catchExceptions && $this->errorPresenter) {
 				try {
 					$this->processException($e);
-					$this->onShutdown($this, $e);
+					$this->onShutdown($this, $e); // use event-dispatcher instead
 					return;
 
 				} catch (\Throwable|\Exception $e) {
-					$this->onError($this, $e);
+					$this->onError($this, $e); // use event-dispatcher instead
 				}
 			}
-			$this->onShutdown($this, $e);
+			$this->onShutdown($this, $e); // use event-dispatcher instead
 			throw $e;
 		}
 	}
@@ -126,7 +126,7 @@ final class CallablePresenterAwareApplication extends Application
 		}
 
 		$this->requests[] = $request;
-		$this->onRequest($this, $request);
+		$this->onRequest($this, $request); // use event-dispatcher instead
 
 		if (!$request->isMethod($request::FORWARD) && !strcasecmp($request->getPresenterName(), $this->errorPresenter)) {
 			throw new BadRequestException('Invalid request. Presenter is not achievable.');
@@ -137,7 +137,7 @@ final class CallablePresenterAwareApplication extends Application
 		} catch (InvalidPresenterException $e) {
 			throw count($this->requests) > 1 ? $e : new BadRequestException($e->getMessage(), 0, $e);
 		}
-		$this->onPresenter($this, $this->presenter);
+		$this->onPresenter($this, $this->presenter); // use event-dispatcher instead
 		$response = $this->presenter->run(clone $request);
 
 		if ($response instanceof Responses\ForwardResponse) {
@@ -145,7 +145,7 @@ final class CallablePresenterAwareApplication extends Application
 			goto process;
 
 		} elseif ($response) {
-			$this->onResponse($this, $response);
+			$this->onResponse($this, $response); // use event-dispatcher instead
 			$response->send($this->httpRequest, $this->httpResponse);
 		}
 	}
