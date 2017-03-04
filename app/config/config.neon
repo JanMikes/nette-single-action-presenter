@@ -22,9 +22,5 @@ services:
 	- App\Forms\SignUpFormFactory
 	router: App\RouterFactory::createRouter
 
-	# SingleActionPresenter package
-	- SingleActionPresenter\Application\PresenterHelper
-	- SingleActionPresenter\Template\TemplateRenderer
-
-	application: SingleActionPresenter\Application\CallablePresenterAwareApplication
-	application.presenterFactory: SingleActionPresenter\Application\PresenterFactory
+extensions:
+    - IndependentSingleActionPresenter\DI\IndependentSingleActionPresenterExtension
