@@ -27,3 +27,13 @@ services:
 	- SingleActionPresenter\Template\TemplateRenderer
 
 	application: SingleActionPresenter\Application\CallablePresenterAwareApplication
+	application.presenterFactory:
+	    class: SingleActionPresenter\Application\PresenterFactory
+	    arguments:
+	        0: @application.presenterFactoryCallback
+
+	application.presenterFactoryCallback:
+	     class: Nette\Bridges\ApplicationDI\PresenterFactoryCallback
+	     arguments:
+	         1: NULL
+	         2: NULL

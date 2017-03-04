@@ -35,10 +35,12 @@ final class HomepagePresenter implements IPresenter // @todo: drop this
 
 
 	/**
-	 * Temp for BC.
+	 * For interface BC. To be removed.
+	 *
 	 * @return IResponse
 	 */
 	public function run(Request $request)
 	{
 	}
+
 }
