@@ -191,16 +191,4 @@ final class CallablePresenterAwareApplication extends Application
 		return $this->presenter;
 	}
 
-
-	public function getRouter(): IRouter
-	{
-		return $this->router;
-	}
-
-
-	public function getPresenterFactory(): IPresenterFactory
-	{
-		return $this->presenterFactory;
-	}
-
 }
