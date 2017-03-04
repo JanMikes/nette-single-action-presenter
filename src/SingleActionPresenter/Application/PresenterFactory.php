@@ -6,6 +6,7 @@ use Nette;
 use Nette\Application\InvalidPresenterException;
 use Nette\Application\IPresenter;
 use Nette\Application\IPresenterFactory;
+use Nette\DI\Container;
 
 
 /**
@@ -24,27 +25,27 @@ final class PresenterFactory implements IPresenterFactory
 	/** @var array */
 	private $cache = [];
 
-	/** @var callable */
-	private $factory;
-
-
 	/**
-	 * @param  callable  function (string $class): IPresenter
+	 * @var Container
 	 */
-	public function __construct(callable $factory = NULL)
+	private $container;
+
+
+	public function __construct(Container $container)
 	{
-		$this->factory = $factory ?: function ($class) { return new $class; };
+		$this->container = $container;
 	}
 
 
 	/**
-	 * Creates new presenter instance.
-	 * @param  string  presenter name
-	 * @return IPresenter
+	 * @param string $name
+	 * @return IPresenter|callable
 	 */
 	public function createPresenter($name)
 	{
-		return call_user_func($this->factory, $this->getPresenterClass($name));
+		$presenterClass = $this->getPresenterClass($name);
+
+		return $this->container->createInstance($presenterClass);
 	}
 
 
