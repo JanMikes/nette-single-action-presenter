@@ -3,6 +3,7 @@
 namespace SingleActionPresenter\Application;
 
 use Nette;
+use Nette\Application\Application;
 use Nette\Application\IPresenter;
 use Nette\Application\IPresenterFactory;
 use Nette\Application\IRouter;
@@ -18,7 +19,7 @@ use Nette\Application\UI;
 /**
  * Front Controller.
  */
-final class Application
+final class CallablePresenterAwareApplication extends Application
 {
 	use Nette\SmartObject;
 
@@ -79,17 +80,15 @@ final class Application
 
 	/**
 	 * Dispatch a HTTP request to a front controller.
-	 * @return void
 	 */
-	public function run()
+	public function run(): void
 	{
 		try {
 			$this->onStartup($this);
 			$this->processRequest($this->createInitialRequest());
 			$this->onShutdown($this);
 
-		} catch (\Throwable $e) {
-		} catch (\Exception $e) {
+		} catch (\Throwable|\Exception $e) {
 		}
 		if (isset($e)) {
 			$this->onError($this, $e);
@@ -99,9 +98,7 @@ final class Application
 					$this->onShutdown($this, $e);
 					return;
 
-				} catch (\Throwable $e) {
-					$this->onError($this, $e);
-				} catch (\Exception $e) {
+				} catch (\Throwable|\Exception $e) {
 					$this->onError($this, $e);
 				}
 			}
@@ -111,10 +108,7 @@ final class Application
 	}
 
 
-	/**
-	 * @return Request
-	 */
-	public function createInitialRequest()
+	public function createInitialRequest(): Request
 	{
 		$request = $this->router->match($this->httpRequest);
 		if (!$request instanceof Request) {
@@ -124,10 +118,7 @@ final class Application
 	}
 
 
-	/**
-	 * @return void
-	 */
-	public function processRequest(Request $request)
+	public function processRequest(Request $request): void
 	{
 		process:
 		if (count($this->requests) > self::$maxLoop) {
@@ -161,10 +152,9 @@ final class Application
 
 
 	/**
-	 * @param  \Exception|\Throwable
-	 * @return void
+	 * @param \Exception|\Throwable $e
 	 */
-	public function processException($e)
+	public function processException($e): void
 	{
 		if (!$e instanceof BadRequestException && $this->httpResponse instanceof Nette\Http\Response) {
 			$this->httpResponse->warnOnBuffer = FALSE;
@@ -190,40 +180,25 @@ final class Application
 	 * Returns all processed requests.
 	 * @return Request[]
 	 */
-	public function getRequests()
+	public function getRequests(): array
 	{
 		return $this->requests;
 	}
 
 
-	/**
-	 * Returns current presenter.
-	 * @return IPresenter|NULL
-	 */
-	public function getPresenter()
+	public function getPresenter(): ?IPresenter
 	{
 		return $this->presenter;
 	}
 
 
-	/********************* services ****************d*g**/
-
-
-	/**
-	 * Returns router.
-	 * @return IRouter
-	 */
-	public function getRouter()
+	public function getRouter(): IRouter
 	{
 		return $this->router;
 	}
 
 
-	/**
-	 * Returns presenter factory.
-	 * @return IPresenterFactory
-	 */
-	public function getPresenterFactory()
+	public function getPresenterFactory(): IPresenterFactory
 	{
 		return $this->presenterFactory;
 	}
