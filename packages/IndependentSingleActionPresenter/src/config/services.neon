@@ -1,0 +1,6 @@
+- IndependentSingleActionPresenter\Application\PresenterHelper
+- IndependentSingleActionPresenter\Template\TemplateRenderer
+
+# name required to override origin services
+application: IndependentSingleActionPresenter\Application\CallablePresenterAwareApplication
+application.presenterFactory: IndependentSingleActionPresenter\Application\PresenterFactory
