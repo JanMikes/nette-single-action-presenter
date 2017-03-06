@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SingleActionPresenter\Template;
+namespace IndependentSingleActionPresenter\Template;
 
 use Nette\Application\UI\ITemplateFactory;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use SingleActionPresenter\Application\PresenterHelper;
+use IndependentSingleActionPresenter\Application\PresenterHelper;
 
 
 final class TemplateRenderer // @todo: add interface
