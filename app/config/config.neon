@@ -22,6 +22,7 @@ services:
 	- App\Forms\SignUpFormFactory
 	router: App\RouterFactory::createRouter
 
-	# SingleActionPresenter package
-	- SingleActionPresenter\Application\PresenterHelper
-	- SingleActionPresenter\Template\TemplateRenderer
+
+extensions:
+    - IndependentSingleActionPresenter\DI\IndependentSingleActionPresenterExtension
+    - Symplify\SymfonyEventDispatcher\Adapter\Nette\DI\SymfonyEventDispatcherExtension

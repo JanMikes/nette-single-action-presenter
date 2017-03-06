@@ -6,10 +6,10 @@ use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
-use SingleActionPresenter\Template\TemplateRenderer;
+use IndependentSingleActionPresenter\Template\TemplateRenderer;
 
 
-final class HomepagePresenter implements IPresenter
+final class HomepagePresenter
 {
 
 	/**
@@ -24,7 +24,7 @@ final class HomepagePresenter implements IPresenter
 	}
 
 
-	public function run(Request $request): IResponse
+	public function __invoke(Request $request): IResponse
 	{
 		return new TextResponse(
 			$this->templateRenderer->renderFileWithParameters(
