@@ -44,8 +44,13 @@ final class PresenterFactory implements IPresenterFactory
 	public function createPresenter($name)
 	{
 		$presenterClass = $this->getPresenterClass($name);
+		$presenter = $this->container->createInstance($presenterClass);
 
-		return $this->container->createInstance($presenterClass);
+		if ($presenter instanceof Nette\Application\UI\Presenter) {
+			$this->container->callInjects($presenter);
+		}
+
+		return $presenter;
 	}
 
 
