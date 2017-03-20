@@ -12,15 +12,15 @@ final class IndependentSingleActionPresenterExtension extends CompilerExtension
 
 	public function loadConfiguration()
 	{
-		$builder = $this->getContainerBuilder();
+		$containerBuilder = $this->getContainerBuilder();
 
 		Compiler::loadDefinitions(
-			$builder,
+			$containerBuilder,
 			$this->loadFromFile(__DIR__. '/../config/services.neon')
 		);
 
-		if ($builder->findByType(ITemplateFactory::class)) {
-			$builder->addDefinition($this->prefix('templateRenderer'))
+		if ($containerBuilder->findByType(ITemplateFactory::class)) {
+			$containerBuilder->addDefinition($this->prefix('templateRenderer'))
 				->setClass(TemplateRenderer::class);
 		}
 	}
