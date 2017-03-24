@@ -1,4 +1,5 @@
 {
+	"minimum-stability": "dev",
 	"name": "nette/sandbox",
 	"require": {
 		"php": "^7.1",
@@ -16,17 +17,9 @@
 		"latte/latte": "^2.4",
 		"tracy/tracy": "^2.4",
 
-		"tomas-votruba/independent-single-action-presenter": "@dev",
 		"symfony/event-dispatcher": "^3.2",
-		"symplify/symfony-event-dispatcher": "^1.4"
-	},
-	"repositories": [
-		{
-			"type": "path",
-			"url": "packages/IndependentSingleActionPresenter",
-			"options": {
-				"symlink": true
-			}
-		}
-	]
+		"symplify/symfony-event-dispatcher": "^1.4",
+		"symplify/symbiotic-controller": "@dev",
+		"odbav-to/presenter-route": "@dev"
+	}
 }

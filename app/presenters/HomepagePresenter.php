@@ -2,11 +2,10 @@
 
 namespace App\Presenters;
 
-use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
-use IndependentSingleActionPresenter\Template\TemplateRenderer;
+use Symplify\SymbioticController\Template\TemplateRenderer;
 
 
 final class HomepagePresenter
